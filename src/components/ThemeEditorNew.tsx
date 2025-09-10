@@ -1,7 +1,5 @@
-'use client';
-
 import { useState } from 'react';
-import { StorybookTheme, defaultLightTheme, defaultDarkTheme } from '@/types/theme';
+import { StorybookTheme, defaultLightTheme, defaultDarkTheme } from '../theme';
 import ColorPicker from './ColorPicker';
 import NumberInput from './NumberInput';
 import TextInput from './TextInput';
