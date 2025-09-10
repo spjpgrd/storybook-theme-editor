@@ -1,2 +1,4 @@
 name = "storybook-theme-editor"
 compatibility_date = "2025-09-10"
+
+pages_build_output_dir = "dist"
