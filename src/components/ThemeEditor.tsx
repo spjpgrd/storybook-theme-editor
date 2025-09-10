@@ -6,7 +6,7 @@ import NumberInput from './NumberInput';
 import TextInput from './TextInput';
 import BaseSelector from './BaseSelector';
 import StorybookSidebar from './StorybookSidebar';
-import { Download, RotateCcw, Sun, Moon, Eye, Code, Settings, GripHorizontal } from 'lucide-react';
+import { Download, RotateCcw, Code, Settings } from 'lucide-react';
 
 export default function ThemeEditor() {
   const [theme, setTheme] = useState<StorybookTheme>(defaultLightTheme);
