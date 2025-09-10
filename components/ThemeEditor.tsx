@@ -13,7 +13,7 @@ export default function ThemeEditor() {
   const [theme, setTheme] = useState<StorybookTheme>(defaultLightTheme);
   const [showCode, setShowCode] = useState(false);
   const [activeTab, setActiveTab] = useState<'controls' | 'actions'>('controls');
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
 
   const updateTheme = (updates: Partial<StorybookTheme>) => {
     setTheme(prev => ({ ...prev, ...updates }));
@@ -74,7 +74,9 @@ export default function ThemeEditor() {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar - Demo Only */}
-      <StorybookSidebar />
+      <div>
+        <StorybookSidebar />
+      </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col relative">
@@ -85,21 +87,11 @@ export default function ThemeEditor() {
               <h1 className="text-xl font-semibold text-gray-900">Storybook Theme Editor</h1>
               <p className="text-sm text-gray-600">Customize your Storybook theme and export it as a JavaScript file</p>
             </div>
-
-            {/* Toggle Drawer Button */}
-            <button
-              onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-              className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              {isDrawerOpen ? 'Hide' : 'Show'} Controls
-              {isDrawerOpen ? <ChevronDown className="w-4 h-4 ml-2" /> : <ChevronUp className="w-4 h-4 ml-2" />}
-            </button>
           </div>
         </div>
 
         {/* Canvas Area - Live Preview */}
-        <div className={`flex-1 bg-white p-8 transition-all duration-300 ${isDrawerOpen ? 'pb-96' : ''}`}>
+        <div className="flex-1 bg-white p-8">
           <div className="max-w-4xl mx-auto">
             <div
               className="p-8 rounded-lg border-2 border-dashed min-h-[400px]"
@@ -305,11 +297,16 @@ const theme = {
           </div>
         </div>
 
-        {/* Bottom Controls Drawer - Sticky */}
-        {isDrawerOpen && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-            {/* Tabs */}
-            <div className="flex border-b border-gray-200">
+        {/* Bottom Controls Drawer - Always Visible */}
+        <div
+          className="bg-white border-t border-gray-200 fixed bottom-0 right-0 w-full"
+          style={{
+            boxShadow: '0 -10px 15px -3px rgb(0 0 0 / 0.1), 0 -4px 6px -4px rgb(0 0 0 / 0.1)'
+          }}
+        >
+          {/* Control Bar with Tabs and Toggle */}
+          <div className="flex items-center justify-between border-b border-gray-200">
+            <div className="flex">
               <button
                 onClick={() => setActiveTab('controls')}
                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
@@ -332,8 +329,24 @@ const theme = {
               </button>
             </div>
 
-            {/* Controls Content */}
-            <div className="max-h-96 overflow-y-auto">
+            {/* Toggle Button */}
+            <button
+              onClick={() => setIsDrawerExpanded(!isDrawerExpanded)}
+              className="flex items-center px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors mr-4"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              {isDrawerExpanded ? 'Minimize' : 'Maximize'}
+              {isDrawerExpanded ? <ChevronDown className="w-4 h-4 ml-2" /> : <ChevronUp className="w-4 h-4 ml-2" />}
+            </button>
+          </div>
+
+          {/* Controls Content - Expandable */}
+          <div
+            className={`overflow-hidden transition-all duration-300 ${
+              isDrawerExpanded ? 'max-h-[60vh]' : 'max-h-0'
+            }`}
+          >
+            <div className="overflow-y-auto" style={{ maxHeight: '60vh' }}>
               {activeTab === 'controls' && (
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -651,7 +664,7 @@ const theme = {
               )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
