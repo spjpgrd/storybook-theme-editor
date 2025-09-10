@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/spjpgrd/storybook-theme-editor#readme
+    about: Check out our README for usage instructions and examples
+  - name: 💬 Discussions
+    url: https://github.com/spjpgrd/storybook-theme-editor/discussions
+    about: Ask questions and share ideas with the community
+  - name: 🐛 Bug Report
+    url: https://github.com/spjpgrd/storybook-theme-editor/issues/new?template=bug_report.yml
+    about: Report a bug or unexpected behavior
+  - name: ✨ Feature Request
+    url: https://github.com/spjpgrd/storybook-theme-editor/issues/new?template=feature_request.yml
+    about: Suggest an idea for this project
+  - name: ❓ Question
+    url: https://github.com/spjpgrd/storybook-theme-editor/issues/new?template=question.yml
+    about: Ask a question about the project

@@ -1,0 +1,93 @@
+name: ❓ Question
+description: Ask a question about the project
+title: "[Question]: "
+labels: ["question", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your question! We're here to help. Please provide as much detail as possible.
+
+  - type: dropdown
+    id: question-type
+    attributes:
+      label: Question Type
+      description: What type of question do you have?
+      options:
+        - How to use the editor
+        - Theme customization help
+        - Integration with Storybook
+        - Export/Import questions
+        - Troubleshooting
+        - General question
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: Ask your question here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any relevant context about your question.
+      placeholder: |
+        - What are you trying to achieve?
+        - What have you tried so far?
+        - Any relevant background information...
+
+  - type: textarea
+    id: steps-taken
+    attributes:
+      label: Steps You've Taken
+      description: What steps have you already taken to try to answer your question?
+      placeholder: |
+        1. I tried...
+        2. I looked at...
+        3. I searched for...
+
+  - type: textarea
+    id: expected-answer
+    attributes:
+      label: Expected Answer
+      description: What kind of answer are you looking for?
+      placeholder: |
+        - Step-by-step instructions
+        - Code example
+        - Explanation of concepts
+        - Link to documentation
+        - Other...
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help illustrate your question.
+      placeholder: Drag and drop screenshots here or paste image URLs
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this question?
+      options:
+        - Low - Just curious
+        - Medium - Would like to know soon
+        - High - Blocking my work
+        - Critical - Need immediate help
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any other information that might be helpful?
+      placeholder: Browser, OS, version, etc.
