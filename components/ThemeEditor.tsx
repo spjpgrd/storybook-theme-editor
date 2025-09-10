@@ -1,19 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StorybookTheme, defaultLightTheme, defaultDarkTheme } from '@/types/theme';
 import ColorPicker from './ColorPicker';
 import NumberInput from './NumberInput';
 import TextInput from './TextInput';
 import BaseSelector from './BaseSelector';
 import StorybookSidebar from './StorybookSidebar';
-import { Download, RotateCcw, Sun, Moon, Eye, Code, ChevronUp, ChevronDown, Settings } from 'lucide-react';
+import { Download, RotateCcw, Sun, Moon, Eye, Code, ChevronUp, ChevronDown, Settings, GripHorizontal } from 'lucide-react';
 
 export default function ThemeEditor() {
   const [theme, setTheme] = useState<StorybookTheme>(defaultLightTheme);
   const [showCode, setShowCode] = useState(false);
   const [activeTab, setActiveTab] = useState<'controls' | 'actions'>('controls');
   const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
+  const [drawerHeight, setDrawerHeight] = useState(400); // Default height in pixels
+  const [isResizing, setIsResizing] = useState(false);
 
   const updateTheme = (updates: Partial<StorybookTheme>) => {
     setTheme(prev => ({ ...prev, ...updates }));
@@ -70,6 +72,49 @@ export default function ThemeEditor() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isResizing) return;
+
+    const newHeight = window.innerHeight - e.clientY;
+    const minHeight = 60; // Minimum height (control bar)
+    const maxHeight = window.innerHeight * 0.8; // Maximum 80% of viewport
+
+    if (newHeight >= minHeight && newHeight <= maxHeight) {
+      setDrawerHeight(newHeight);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsResizing(false);
+  };
+
+  // Add event listeners for mouse move and up
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ns-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -299,11 +344,20 @@ const theme = {
 
         {/* Bottom Controls Drawer - Always Visible */}
         <div
-          className="bg-white border-t border-gray-200 fixed bottom-0 right-0 w-full"
+          className="bg-white border-t border-gray-200 fixed bottom-0 right-0 w-full rounded-t-lg"
           style={{
-            boxShadow: '0 -10px 15px -3px rgb(0 0 0 / 0.1), 0 -4px 6px -4px rgb(0 0 0 / 0.1)'
+            boxShadow: '0 -10px 15px -3px rgb(0 0 0 / 0.1), 0 -4px 6px -4px rgb(0 0 0 / 0.1)',
+            height: `${drawerHeight}px`
           }}
         >
+          {/* Resize Handle */}
+          <div
+            className="w-full h-4 cursor-ns-resize hover:bg-gray-100 transition-colors flex items-center justify-center"
+            onMouseDown={handleMouseDown}
+          >
+            <span className="w-12 h-1 bg-gray-200 rounded-full" ></span>
+          </div>
+
           {/* Control Bar with Tabs and Toggle */}
           <div className="flex items-center justify-between border-b border-gray-200">
             <div className="flex">
@@ -343,10 +397,10 @@ const theme = {
           {/* Controls Content - Expandable */}
           <div
             className={`overflow-hidden transition-all duration-300 ${
-              isDrawerExpanded ? 'max-h-[60vh]' : 'max-h-0'
+              isDrawerExpanded ? 'max-h-full' : 'max-h-0'
             }`}
           >
-            <div className="overflow-y-auto" style={{ maxHeight: '60vh' }}>
+            <div className="overflow-y-auto" style={{ maxHeight: `${drawerHeight - 100}px` }}>
               {activeTab === 'controls' && (
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
