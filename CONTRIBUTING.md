@@ -40,7 +40,7 @@ This project and everyone participating in it is governed by our commitment to p
 1. **Fork the repository**
    ```bash
    # Click the "Fork" button on GitHub, then clone your fork
-   git clone https://github.com/YOUR_USERNAME/storybook-theme-editor.git
+   git clone https://github.com/spjpgrd/storybook-theme-editor.git
    cd storybook-theme-editor
    ```
 
