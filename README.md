@@ -1,6 +1,8 @@
 ![Storybook Theme Editor](/assets/spjpgrd-storybook-theme-editor.jpg)
 # Storybook Theme Editor
-Judging books by their cover
+*Judging books by their cover*
+
+***
 
 A web-based visual editor for creating and customizing Storybook themes. This tool allows you to:
 
@@ -29,7 +31,7 @@ A web-based visual editor for creating and customizing Storybook themes. This to
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/spjpgrd/storybook-theme-editor
 cd storybook-theme-editor
 ```
 
