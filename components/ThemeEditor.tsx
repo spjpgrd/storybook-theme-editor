@@ -7,15 +7,26 @@ import NumberInput from './NumberInput';
 import TextInput from './TextInput';
 import BaseSelector from './BaseSelector';
 import StorybookSidebar from './StorybookSidebar';
-import { Download, RotateCcw, Sun, Moon, Eye, Code, ChevronUp, ChevronDown, Settings, GripHorizontal } from 'lucide-react';
+import { Download, RotateCcw, Sun, Moon, Eye, Code, Settings, GripHorizontal } from 'lucide-react';
 
 export default function ThemeEditor() {
   const [theme, setTheme] = useState<StorybookTheme>(defaultLightTheme);
   const [showCode, setShowCode] = useState(false);
   const [activeTab, setActiveTab] = useState<'controls' | 'actions'>('controls');
-  const [isDrawerExpanded, setIsDrawerExpanded] = useState(false);
   const [drawerHeight, setDrawerHeight] = useState(400); // Default height in pixels
   const [isResizing, setIsResizing] = useState(false);
+  const [themeName, setThemeName] = useState('MyTheme');
+
+  const sanitizeThemeName = (name: string) => {
+    // Replace spaces with hyphens
+    return name.replace(/\s+/g, '-');
+  };
+
+  const handleThemeNameChange = (value: string) => {
+    const sanitized = sanitizeThemeName(value);
+    setThemeName(sanitized);
+  };
+  const [themeVersion, setThemeVersion] = useState(1);
 
   const updateTheme = (updates: Partial<StorybookTheme>) => {
     setTheme(prev => ({ ...prev, ...updates }));
@@ -30,7 +41,7 @@ export default function ThemeEditor() {
   };
 
   const exportTheme = () => {
-    const themeString = `export const YourTheme = {
+    const themeString = `export const ${themeName} = {
   base: '${theme.base}',
   colorPrimary: '${theme.colorPrimary}',
   colorSecondary: '${theme.colorSecondary}',
@@ -66,11 +77,14 @@ export default function ThemeEditor() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'YourTheme.js';
+    a.download = `${themeName}-v${themeVersion}.js`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+
+    // Auto-increment version for next export
+    setThemeVersion(prev => prev + 1);
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -358,8 +372,8 @@ const theme = {
             <span className="w-12 h-1 bg-gray-200 rounded-full" ></span>
           </div>
 
-          {/* Control Bar with Tabs and Toggle */}
-          <div className="flex items-center justify-between border-b border-gray-200">
+          {/* Control Bar with Tabs */}
+          <div className="flex items-center border-b border-gray-200">
             <div className="flex">
               <button
                 onClick={() => setActiveTab('controls')}
@@ -369,6 +383,7 @@ const theme = {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
+                <Settings className="w-4 h-4 mr-2 inline" />
                 Controls (24)
               </button>
               <button
@@ -379,27 +394,14 @@ const theme = {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
+                <Download className="w-4 h-4 mr-2 inline" />
                 Actions
               </button>
             </div>
-
-            {/* Toggle Button */}
-            <button
-              onClick={() => setIsDrawerExpanded(!isDrawerExpanded)}
-              className="flex items-center px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors mr-4"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              {isDrawerExpanded ? 'Minimize' : 'Maximize'}
-              {isDrawerExpanded ? <ChevronDown className="w-4 h-4 ml-2" /> : <ChevronUp className="w-4 h-4 ml-2" />}
-            </button>
           </div>
 
-          {/* Controls Content - Expandable */}
-          <div
-            className={`overflow-hidden transition-all duration-300 ${
-              isDrawerExpanded ? 'max-h-full' : 'max-h-0'
-            }`}
-          >
+          {/* Controls Content */}
+          <div className="overflow-hidden">
             <div className="overflow-y-auto" style={{ maxHeight: `${drawerHeight - 100}px` }}>
               {activeTab === 'controls' && (
                 <div className="p-6">
@@ -648,7 +650,43 @@ const theme = {
 
               {activeTab === 'actions' && (
                 <div className="p-6">
-                  <div className="space-y-4">
+                  <div className="space-y-6">
+                    {/* Export Configuration */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Export Configuration</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Theme Name
+                          </label>
+                          <input
+                            type="text"
+                            value={themeName}
+                            onChange={(e) => handleThemeNameChange(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="MyTheme"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Spaces will be replaced with hyphens</p>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Version
+                          </label>
+                          <input
+                            type="number"
+                            value={themeVersion}
+                            onChange={(e) => setThemeVersion(parseInt(e.target.value) || 1)}
+                            min="1"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <p>File will be exported as: <code className="bg-gray-100 px-2 py-1 rounded">{themeName}-v{themeVersion}.js</code></p>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={resetToDefault}
@@ -678,7 +716,7 @@ const theme = {
                       {showCode && (
                         <div className="mt-4 p-4 bg-gray-900 rounded-lg">
                           <pre className="text-green-400 text-sm overflow-x-auto">
-                            <code>{`export const YourTheme = {
+                            <code>{`export const ${themeName} = {
   base: '${theme.base}',
   colorPrimary: '${theme.colorPrimary}',
   colorSecondary: '${theme.colorSecondary}',
