@@ -1,4 +1,6 @@
+![Storybook Theme Editor](/assets/spjpgrd-storybook-theme-editor.jpg)
 # Storybook Theme Editor
+Judging books by their cover
 
 A web-based visual editor for creating and customizing Storybook themes. This tool allows you to:
 
